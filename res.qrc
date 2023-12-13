@@ -3,5 +3,10 @@
         <file>img/player.png</file>
         <file>img/enemy.png</file>
         <file>img/missile.png</file>
+        <file>img/unmute.png</file>
+        <file>img/less.png</file>
+        <file>img/life.png</file>
+        <file>img/mute.png</file>
+        <file>img/plus.png</file>
     </qresource>
 </RCC>

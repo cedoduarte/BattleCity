@@ -25,6 +25,8 @@ set(PROJECT_SOURCES
         missile.h missile.cpp
         imageitem.h imageitem.cpp
         movableitem.h movableitem.cpp
+        mousetracker.h mousetracker.cpp mousetracker.ui
+        playerhud.h playerhud.cpp playerhud.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

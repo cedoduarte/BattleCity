@@ -9,19 +9,18 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    m_scene = new Scene(ui->graphicsView->size(), this);
+    QRectF sceneRect;
+    sceneRect.setX(0.0);
+    sceneRect.setY(0.0);
+    sceneRect.setWidth(800);
+    sceneRect.setHeight(600);
+    m_scene = new Scene(sceneRect, this);
+    Scene::setScene(m_scene);
     ui->graphicsView->setScene(m_scene);
+    ui->graphicsView->setMouseTracking(true);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-    QRectF rect = m_scene->sceneRect();
-    rect.setSize(ui->graphicsView->size());
-    m_scene->setSceneRect(rect);
-}
-

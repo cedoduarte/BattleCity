@@ -1,5 +1,4 @@
 #include "tank.h"
-
 #include "missile.h"
 #include "scene.h"
 
@@ -16,8 +15,7 @@ void Tank::shoot() const
 {
     QSize tankSize = pixmap().size();
     QPointF tankPos = scenePos();
-    // todo... colisiones, etc...
-    Missile *missile = new Missile;
+    Missile *missile = new Missile(m_tankType == PLAYER_TANK);
     QSize missileSize = missile->pixmap().size();
     QPointF missilePos;
     double dxMissile = 0.0;
@@ -54,5 +52,5 @@ void Tank::shoot() const
     missile->setPos(missilePos);
     missile->setRotation(rotation());
     missile->directionRef() = m_direction;
-    dynamic_cast<Scene*>(scene())->addMissile(missile);
+    Scene::scene()->addMissile(missile);
 }

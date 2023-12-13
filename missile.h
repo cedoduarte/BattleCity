@@ -6,13 +6,17 @@
 class Missile : public MovableItem
 {
 public:
-    explicit Missile(QGraphicsItem *parent = nullptr);
+    explicit Missile(bool shootedByPlayer, QGraphicsItem *parent = nullptr);
     virtual ~Missile();
     void move();
     int& directionRef() { return m_direction; }
+    void setShootedByPlayer(bool shootedByPlayer) { m_shootedByPlayer = shootedByPlayer; }
+    bool shootedByPlayer() const { return m_shootedByPlayer; }
 protected:
     void loadImageFromResource() override;
     void setSpeed() override;
+private:
+    bool m_shootedByPlayer;
 };
 
 #endif // MISSILE_H

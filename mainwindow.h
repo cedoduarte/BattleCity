@@ -16,8 +16,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
-protected:
-    void resizeEvent(QResizeEvent *event) override;
 private:
     Ui::MainWindow *ui;
     Scene *m_scene;

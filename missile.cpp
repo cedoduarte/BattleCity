@@ -1,8 +1,9 @@
 #include "missile.h"
 
-Missile::Missile(QGraphicsItem *parent)
+Missile::Missile(bool shootedByPlayer, QGraphicsItem *parent)
     : MovableItem(parent)
 {
+    m_shootedByPlayer = shootedByPlayer;
     loadImageFromResource();
     setSpeed();
 }

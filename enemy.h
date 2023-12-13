@@ -11,6 +11,8 @@ public:
 protected:
     void loadImageFromResource() override;
     void setSpeed() override;
+    void setLifes() override;
+    void setTankType() override;
 };
 
 #endif // ENEMY_H
