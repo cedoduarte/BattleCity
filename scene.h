@@ -36,6 +36,10 @@ public:
     void setShootKey(const NameKey &key) { m_shootKey = key; }
     void loadHUDs();
     void startTimer(int msecs);
+    QGraphicsRectItem *topRectItem() const { return m_topRect; }
+    QGraphicsRectItem *bottomRectItem() const { return m_bottomRect; }
+    QGraphicsRectItem *leftRectItem() const { return m_leftRect; }
+    QGraphicsRectItem *rightRectItem() const { return m_rightRect; }
 private slots:
     void timeOut();
 protected:

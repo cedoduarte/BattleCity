@@ -34,6 +34,7 @@ void PlayerHUD::on_tank_lessSpeedButton_clicked()
         speed = 1;
     }
     Player::player()->setSpeedX(speed);
+    Player::player()->setSpeedY(speed);
     ui->tankSpeed_lcdNumber->display(QString::number(speed));
 }
 
@@ -41,6 +42,7 @@ void PlayerHUD::on_tank_moreSpeedButton_clicked()
 {
     const double speed = Player::player()->xSpeed() + 1;
     Player::player()->setSpeedX(speed);
+    Player::player()->setSpeedY(speed);
     ui->tankSpeed_lcdNumber->display(QString::number(speed));
 }
 

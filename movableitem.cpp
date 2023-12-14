@@ -6,6 +6,10 @@ MovableItem::MovableItem(QGraphicsItem *parent)
     m_xSpeed = 0.0;
     m_ySpeed = 0.0;
     m_direction = NORTH;
+    m_moveRightEnabled = true;
+    m_moveLeftEnabled = true;
+    m_moveUpEnabled = true;
+    m_moveDownEnabled = true;
 }
 
 MovableItem::~MovableItem()
@@ -14,26 +18,38 @@ MovableItem::~MovableItem()
 
 void MovableItem::moveRight()
 {
-    setDirection(EAST);
-    moveBy(m_xSpeed, 0.0);
+    if (m_moveRightEnabled)
+    {
+        setDirection(EAST);
+        moveBy(m_xSpeed, 0.0);
+    }
 }
 
 void MovableItem::moveLeft()
 {
-    setDirection(WEST);
-    moveBy(-m_xSpeed, 0.0);
+    if (m_moveLeftEnabled)
+    {
+        setDirection(WEST);
+        moveBy(-m_xSpeed, 0.0);
+    }
 }
 
 void MovableItem::moveUp()
 {
-    setDirection(NORTH);
-    moveBy(0.0, -m_ySpeed);
+    if (m_moveUpEnabled)
+    {
+        setDirection(NORTH);
+        moveBy(0.0, -m_ySpeed);
+    }
 }
 
 void MovableItem::moveDown()
 {
-    setDirection(SOUTH);
-    moveBy(0.0, m_ySpeed);
+    if (m_moveDownEnabled)
+    {
+        setDirection(SOUTH);
+        moveBy(0.0, m_ySpeed);
+    }
 }
 
 void MovableItem::setDirection(int direction)

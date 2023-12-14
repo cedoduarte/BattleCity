@@ -15,6 +15,10 @@ public:
     QString name() const { return m_name; }
     void setCode(int code) { m_code = code; }
     int code() const { return m_code; }
+    void setEnabled(bool enabled) { m_enabled = enabled; }
+    void setDisabled(bool disabled) { m_enabled = !disabled; }
+    bool isEnabled() { return m_enabled; }
+    bool match(int keyCode) const;
     static int code(const QString &name);
     static QString name(int code);
     static void initializeKeyMap();
@@ -24,6 +28,7 @@ public:
 private:
     QString m_name;
     int m_code;
+    bool m_enabled;
     static std::vector<NameKey> s_keyMap;
 };
 

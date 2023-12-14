@@ -142,6 +142,64 @@ void Scene::timeOut()
         delete it->second;
     }
 
+    // player collides with bounds
+    m_player->setMoveUpEnabled(!m_player->collidesWithItem(m_topRect));
+    m_player->setMoveDownEnabled(!m_player->collidesWithItem(m_bottomRect));
+    m_player->setMoveLeftEnabled(!m_player->collidesWithItem(m_leftRect));
+    m_player->setMoveRightEnabled(!m_player->collidesWithItem(m_rightRect));
+
+    for (Enemy *enemy : m_enemyList)
+    {
+        switch (enemy->direction())
+        {
+            case MovableItem::NORTH:
+            {
+                enemy->moveUp();
+                if (enemy->collidesWithItem(m_topRect))
+                {
+                    do {
+                        enemy->changeDirection();
+                    }
+                    while (enemy->direction() == MovableItem::NORTH);
+                }
+                break;
+            }
+            case MovableItem::SOUTH:
+            {
+                enemy->moveDown();
+                if (enemy->collidesWithItem(m_bottomRect))
+                {
+                    do {
+                        enemy->changeDirection();
+                    } while (enemy->direction() == MovableItem::SOUTH);
+                }
+                break;
+            }
+            case MovableItem::EAST:
+            {
+                enemy->moveRight();
+                if (enemy->collidesWithItem(m_rightRect))
+                {
+                    do {
+                        enemy->changeDirection();
+                    } while (enemy->direction() == MovableItem::EAST);
+                }
+                break;
+            }
+            case MovableItem::WEST:
+            {
+                enemy->moveLeft();
+                if (enemy->collidesWithItem(m_leftRect))
+                {
+                    do {
+                        enemy->changeDirection();
+                    } while (enemy->direction() == MovableItem::WEST);
+                }
+                break;
+            }
+        }
+    }
+
     for (Missile *missile : m_missileList)
     {
         missile->move();
@@ -151,23 +209,23 @@ void Scene::timeOut()
 void Scene::keyPressEvent(QKeyEvent *event)
 {
     const int key = event->key();
-    if (key == m_upKey.code())
+    if (m_upKey.match(key))
     {
         m_player->moveUp();
     }
-    else if (key == m_downKey.code())
+    else if (m_downKey.match(key))
     {
         m_player->moveDown();
     }
-    else if (key == m_leftKey.code())
+    else if (m_leftKey.match(key))
     {
         m_player->moveLeft();
     }
-    else if (key == m_rightKey.code())
+    else if (m_rightKey.match(key))
     {
         m_player->moveRight();
     }
-    else if (key == m_shootKey.code())
+    else if (m_shootKey.match(key))
     {
         m_player->shoot();
     }

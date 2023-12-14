@@ -6,22 +6,30 @@ NameKey::NameKey(const QString &name, int code)
 {
     m_name = name;
     m_code = code;
+    m_enabled = true;
 }
 
 NameKey::NameKey(const NameKey &other)
 {
     m_name = other.m_name;
     m_code = other.m_code;
+    m_enabled = other.m_enabled;
 }
 
 NameKey::NameKey()
 {
     m_name = "";
     m_code = -1;
+    m_enabled = true;
 }
 
 NameKey::~NameKey()
 {
+}
+
+bool NameKey::match(int keyCode) const
+{
+    return m_enabled && m_code == keyCode;
 }
 
 int NameKey::code(const QString &name)

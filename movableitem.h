@@ -24,6 +24,15 @@ public:
     void moveLeft();
     void moveUp();
     void moveDown();
+    bool isMoveRightEnabled() const { return m_moveRightEnabled; }
+    bool isMoveLeftEnabled() const { return m_moveLeftEnabled; }
+    bool isMoveUpEnabled() const { return m_moveUpEnabled; }
+    bool isMoveDownEnabled() const { return m_moveDownEnabled; }
+    void setMoveRightEnabled(bool enabled) { m_moveRightEnabled = enabled; }
+    void setMoveLeftEnabled(bool enabled) { m_moveLeftEnabled = enabled; }
+    void setMoveUpEnabled(bool enabled) { m_moveUpEnabled = enabled; }
+    void setMoveDownEnabled(bool enabled) { m_moveDownEnabled = enabled; }
+    int direction() const { return m_direction; }
 protected:
     virtual void setSpeed() = 0;
     double m_xSpeed;
@@ -48,6 +57,11 @@ private:
     void setDirectionFromWestToNorth();
     void setDirectionFromWestToSouth();
     void setDirectionFromWestToEast();
+
+    bool m_moveRightEnabled;
+    bool m_moveLeftEnabled;
+    bool m_moveUpEnabled;
+    bool m_moveDownEnabled;
 };
 
 #endif // MOVABLEITEM_H
