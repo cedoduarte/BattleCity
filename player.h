@@ -15,6 +15,7 @@ protected:
     void setSpeed() override;
     void setLifes() override;
     void setTankType() override;
+    void setShootSpeed() override;
 private:
     static Player *s_player;
 };

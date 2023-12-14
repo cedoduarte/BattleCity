@@ -16,6 +16,8 @@ void Tank::shoot() const
     QSize tankSize = pixmap().size();
     QPointF tankPos = scenePos();
     Missile *missile = new Missile(m_tankType == PLAYER_TANK);
+    missile->setSpeedX(m_missileSpeed);
+    missile->setSpeedY(m_missileSpeed);
     QSize missileSize = missile->pixmap().size();
     QPointF missilePos;
     double dxMissile = 0.0;

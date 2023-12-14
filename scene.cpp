@@ -4,6 +4,8 @@
 #include "missile.h"
 #include "mousetracker.h"
 #include "playerhud.h"
+#include "enemyhud.h"
+#include "keyhud.h"
 
 #include <QTimer>
 #include <vector>
@@ -26,14 +28,26 @@ Scene::Scene(const QRectF &sceneRect, QObject *parent)
     m_rightRect = addRect(800.0, 0.0, 10.0, 600.0);
 
     m_mouseTrackerProxy = addWidget(new MouseTracker);
-    m_mouseTrackerProxy->setPos(-120.0, 0.0);
+    m_mouseTrackerProxy->setPos(-150.0, 0.0);
 
     m_playerHUDProxy = addWidget(new PlayerHUD);
-    m_playerHUDProxy->setPos(-205.0, 70.0);
+    m_playerHUDProxy->setPos(-280.0, 100.0);
+
+    m_enemyHUDProxy = addWidget(new EnemyHUD);
+    m_enemyHUDProxy->setPos(-280.0, 266.0);
+
+    m_keyHUDProxy = addWidget(new KeyHUD);
+    m_keyHUDProxy->setPos(826.0, 0.0);
+
+    m_upKey = NameKey::getNameKey(Qt::Key_Up);
+    m_downKey = NameKey::getNameKey(Qt::Key_Down);
+    m_leftKey = NameKey::getNameKey(Qt::Key_Left);
+    m_rightKey = NameKey::getNameKey(Qt::Key_Right);
+    m_shootKey = NameKey::getNameKey(Qt::Key_X);
 
     m_player = new Player;
     Player::setPlayer(m_player);
-    dynamic_cast<PlayerHUD*>(m_playerHUDProxy->widget())->loadData();
+
     m_player->setPos(50, 50);
     addItem(m_player);
 
@@ -64,8 +78,6 @@ Scene::Scene(const QRectF &sceneRect, QObject *parent)
 
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &Scene::timeOut);
-
-    m_timer->start(50);
 }
 
 Scene::~Scene()
@@ -83,6 +95,18 @@ void Scene::removeMissile(Missile *missile)
     m_missileList.remove(missile);
     removeItem(missile);
     delete missile;
+}
+
+void Scene::loadHUDs()
+{
+    dynamic_cast<PlayerHUD*>(m_playerHUDProxy->widget())->loadData();
+    dynamic_cast<EnemyHUD*>(m_enemyHUDProxy->widget())->loadData();
+    dynamic_cast<KeyHUD*>(m_keyHUDProxy->widget())->loadData();
+}
+
+void Scene::startTimer(int msecs)
+{
+    m_timer->start(msecs);
 }
 
 void Scene::timeOut()
@@ -126,33 +150,26 @@ void Scene::timeOut()
 
 void Scene::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key())
+    const int key = event->key();
+    if (key == m_upKey.code())
     {
-        case Qt::Key_Left:
-        {
-            m_player->moveLeft();
-            break;
-        }
-        case Qt::Key_Right:
-        {
-            m_player->moveRight();
-            break;
-        }
-        case Qt::Key_Up:
-        {
-            m_player->moveUp();
-            break;
-        }
-        case Qt::Key_Down:
-        {
-            m_player->moveDown();
-            break;
-        }
-        case Qt::Key_X:
-        {
-            m_player->shoot();
-            break;
-        }
+        m_player->moveUp();
+    }
+    else if (key == m_downKey.code())
+    {
+        m_player->moveDown();
+    }
+    else if (key == m_leftKey.code())
+    {
+        m_player->moveLeft();
+    }
+    else if (key == m_rightKey.code())
+    {
+        m_player->moveRight();
+    }
+    else if (key == m_shootKey.code())
+    {
+        m_player->shoot();
     }
 }
 

@@ -17,13 +17,16 @@ PlayerHUD::~PlayerHUD()
 void PlayerHUD::loadData()
 {
     const double speed = Player::player()->xSpeed();
-    ui->speed_lcdNumber->display(QString::number(speed));
+    ui->tankSpeed_lcdNumber->display(QString::number(speed));
 
     const int lifeCount = Player::player()->lifeCount();
     ui->lifes_lcdNumber->display(QString::number(lifeCount));
+
+    const double missileSpeed = Player::player()->missileSpeed();
+    ui->missileSpeed_lcdNumber->display(QString::number(missileSpeed));
 }
 
-void PlayerHUD::on_lessSpeedButton_clicked()
+void PlayerHUD::on_tank_lessSpeedButton_clicked()
 {
     double speed = Player::player()->xSpeed() - 1;
     if (speed == 0)
@@ -31,13 +34,30 @@ void PlayerHUD::on_lessSpeedButton_clicked()
         speed = 1;
     }
     Player::player()->setSpeedX(speed);
-    ui->speed_lcdNumber->display(QString::number(speed));
+    ui->tankSpeed_lcdNumber->display(QString::number(speed));
 }
 
-void PlayerHUD::on_moreSpeedButton_clicked()
+void PlayerHUD::on_tank_moreSpeedButton_clicked()
 {
     const double speed = Player::player()->xSpeed() + 1;
     Player::player()->setSpeedX(speed);
-    ui->speed_lcdNumber->display(QString::number(speed));
+    ui->tankSpeed_lcdNumber->display(QString::number(speed));
 }
 
+void PlayerHUD::on_missile_lessSpeedButton_clicked()
+{
+    double speed = Player::player()->missileSpeed() - 1;
+    if (speed == 0)
+    {
+        speed = 1;
+    }
+    Player::player()->setMissileSpeed(speed);
+    ui->missileSpeed_lcdNumber->display(QString::number(speed));
+}
+
+void PlayerHUD::on_missile_moreSpeedButton_clicked()
+{
+    const double speed = Player::player()->missileSpeed() + 1;
+    Player::player()->setMissileSpeed(speed);
+    ui->missileSpeed_lcdNumber->display(QString::number(speed));
+}

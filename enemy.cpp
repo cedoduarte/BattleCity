@@ -1,5 +1,8 @@
 #include "enemy.h"
 
+double Enemy::s_tankSpeed = 3.0;
+double Enemy::s_tankMissileSpeed = 20.0;
+
 Enemy::Enemy(QGraphicsItem *parent)
     : Tank(parent)
 {
@@ -7,6 +10,7 @@ Enemy::Enemy(QGraphicsItem *parent)
     setSpeed();
     setLifes();
     setTankType();
+    setShootSpeed();
 }
 
 Enemy::~Enemy()
@@ -20,8 +24,8 @@ void Enemy::loadImageFromResource()
 
 void Enemy::setSpeed()
 {
-    setSpeedX(3.0);
-    setSpeedY(3.0);
+    setSpeedX(s_tankSpeed);
+    setSpeedY(s_tankSpeed);
 }
 
 void Enemy::setLifes()
@@ -32,4 +36,9 @@ void Enemy::setLifes()
 void Enemy::setTankType()
 {
     m_tankType = ENEMY_TANK;
+}
+
+void Enemy::setShootSpeed()
+{
+    setMissileSpeed(s_tankMissileSpeed);
 }

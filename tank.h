@@ -17,12 +17,16 @@ public:
     void shoot() const;
     int lifeCount() const { return m_lifeCount; }
     void setLifeCount(int lifeCount) { m_lifeCount = lifeCount; }
+    int missileSpeed() const { return m_missileSpeed; }
+    void setMissileSpeed(int speed) { m_missileSpeed = speed; }
 protected:
     virtual void setLifes() = 0;
     virtual void setTankType() = 0;
+    virtual void setShootSpeed() = 0;
 
     int m_lifeCount;
     TankType m_tankType;
+    int m_missileSpeed;
 };
 
 #endif // TANK_H

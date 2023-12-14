@@ -1,19 +1,19 @@
-#ifndef PLAYERHUD_H
-#define PLAYERHUD_H
+#ifndef ENEMYHUD_H
+#define ENEMYHUD_H
 
 #include <QWidget>
 
 namespace Ui
 {
-class PlayerHUD;
+class EnemyHUD;
 }
 
-class PlayerHUD : public QWidget
+class EnemyHUD : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PlayerHUD(QWidget *parent = nullptr);
-    virtual ~PlayerHUD();
+    explicit EnemyHUD(QWidget *parent = nullptr);
+    virtual ~EnemyHUD();
     void loadData();
 private slots:
     void on_tank_lessSpeedButton_clicked();
@@ -21,7 +21,7 @@ private slots:
     void on_missile_lessSpeedButton_clicked();
     void on_missile_moreSpeedButton_clicked();
 private:
-    Ui::PlayerHUD *ui;
+    Ui::EnemyHUD *ui;
 };
 
-#endif // PLAYERHUD_H
+#endif // ENEMYHUD_H

@@ -27,6 +27,10 @@ set(PROJECT_SOURCES
         movableitem.h movableitem.cpp
         mousetracker.h mousetracker.cpp mousetracker.ui
         playerhud.h playerhud.cpp playerhud.ui
+        enemyhud.h enemyhud.cpp enemyhud.ui
+        keyhud.h keyhud.cpp keyhud.ui
+        keycombobox.h keycombobox.cpp
+        namekey.h namekey.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -53,6 +57,7 @@ else()
 endif()
 
 target_link_libraries(BattleCity PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_include_directories(BattleCity PRIVATE .)
 
 set_target_properties(BattleCity PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
     sceneRect.setHeight(600);
     m_scene = new Scene(sceneRect, this);
     Scene::setScene(m_scene);
+    m_scene->loadHUDs();
+    m_scene->startTimer(50);
     ui->graphicsView->setScene(m_scene);
     ui->graphicsView->setMouseTracking(true);
 }

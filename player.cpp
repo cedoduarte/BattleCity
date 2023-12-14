@@ -9,6 +9,7 @@ Player::Player(QGraphicsItem *parent)
     setSpeed();
     setLifes();
     setTankType();
+    setShootSpeed();
 }
 
 Player::~Player()
@@ -34,4 +35,9 @@ void Player::setLifes()
 void Player::setTankType()
 {
     m_tankType = PLAYER_TANK;
+}
+
+void Player::setShootSpeed()
+{
+    setMissileSpeed(20.0);
 }
