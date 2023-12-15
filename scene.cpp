@@ -58,27 +58,17 @@ Scene::Scene(const QRectF &sceneRect, QObject *parent)
     addItem(m_flagItem);
 
     Enemy *enemy = new Enemy;
-    enemy->setPos(100, 100);
+    enemy->setPos(0.0, 0.0);
     m_enemyList.push_back(enemy);
     addItem(enemy);
 
     enemy = new Enemy;
-    enemy->setPos(60, 80);
+    enemy->setPos(350.0, 0.0);
     m_enemyList.push_back(enemy);
     addItem(enemy);
 
     enemy = new Enemy;
-    enemy->setPos(200, 140);
-    m_enemyList.push_back(enemy);
-    addItem(enemy);
-
-    enemy = new Enemy;
-    enemy->setPos(400, 100);
-    m_enemyList.push_back(enemy);
-    addItem(enemy);
-
-    enemy = new Enemy;
-    enemy->setPos(740, 100);
+    enemy->setPos(730.0, 0.0);
     m_enemyList.push_back(enemy);
     addItem(enemy);
 
@@ -94,13 +84,6 @@ void Scene::addMissile(Missile *missile)
 {
     addItem(missile);
     m_missileList.push_back(missile);
-}
-
-void Scene::removeMissile(Missile *missile)
-{
-    m_missileList.remove(missile);
-    removeItem(missile);
-    delete missile;
 }
 
 void Scene::loadHUDs()
@@ -141,6 +124,19 @@ std::list<Missile *> Scene::getEnemyMissileList() const
     return enemyMissileList;
 }
 
+std::list<Missile *> Scene::getPlayerMissileList() const
+{
+    std::list<Missile*> playerMissileList;
+    for (Missile *missile : m_missileList)
+    {
+        if (missile->shootedByPlayer())
+        {
+            playerMissileList.push_back(missile);
+        }
+    }
+    return playerMissileList;
+}
+
 void Scene::timeOut()
 {
     // collisions between missiles and bounds
@@ -162,15 +158,39 @@ void Scene::timeOut()
         }
     }
 
+    // collisions between player's missiles and enemies' missiles
+    std::list<Missile*> missileToBeDeleted;
+    for (Missile *enemyMissile : getEnemyMissileList())
+    {
+        for (Missile *playerMissile : getPlayerMissileList())
+        {
+            if (playerMissile->collidesWithItem(enemyMissile))
+            {
+                removeItem(playerMissile);
+                m_missileList.remove(playerMissile);
+                missileToBeDeleted.push_back(playerMissile);
+
+                removeItem(enemyMissile);
+                m_missileList.remove(enemyMissile);
+                missileToBeDeleted.push_back(enemyMissile);
+            }
+        }
+    }
+    for (Missile *missile : missileToBeDeleted)
+    {
+        delete missile;
+    }
+
     // collisions between player's missiles and enemies
     auto collisionMap = getCollisionMapWithEnemies();
     for (auto it = collisionMap.begin(); it != collisionMap.end(); it++)
     {
         removeItem(it->first);
-        removeItem(it->second);
         m_missileList.remove(it->first);
-        m_enemyList.remove(it->second);
         delete it->first;
+
+        removeItem(it->second);
+        m_enemyList.remove(it->second);
         delete it->second;
     }
 
@@ -182,7 +202,16 @@ void Scene::timeOut()
             removeItem(missile);
             m_missileList.remove(missile);
             delete missile;
-            // todo... quitar una vida al player y moverlo a la posición inicial
+
+            m_player->reduceLife();
+            dynamic_cast<PlayerHUD*>(m_playerHUDProxy->widget())->loadData();
+            m_player->setPos(310.0, 555.0);
+            m_player->setDirection(MovableItem::NORTH);
+            if (m_player->lifeCount() == 0)
+            {
+                // todo...
+                // game over
+            }
         }
     }
 
@@ -234,6 +263,12 @@ void Scene::timeOut()
 void Scene::keyPressEvent(QKeyEvent *event)
 {
     const int key = event->key();
+    if (event->isAutoRepeat() && m_shootKey.match(key))
+    {
+        event->ignore();
+        QGraphicsScene::keyPressEvent(event);
+        return;
+    }
     if (m_upKey.match(key))
     {
         m_player->moveUp();
@@ -254,6 +289,7 @@ void Scene::keyPressEvent(QKeyEvent *event)
     {
         m_player->shoot();
     }
+    QGraphicsScene::keyPressEvent(event);
 }
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -265,15 +301,7 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 std::map<Missile*, Enemy*> Scene::getCollisionMapWithEnemies() const
 {
     std::map<Missile*, Enemy*> collisionMap;
-    std::vector<Missile*> playerMissileList;
-    for (Missile *missile : m_missileList)
-    {
-        if (missile->shootedByPlayer())
-        {
-            playerMissileList.push_back(missile);
-        }
-    }
-    for (Missile *missile : playerMissileList)
+    for (Missile *missile : getPlayerMissileList())
     {
         for (Enemy *enemy : m_enemyList)
         {

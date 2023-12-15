@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 
+class Tank;
 class FlagItem;
 class Enemy;
 class Player;
@@ -24,7 +25,6 @@ public:
     void addMissile(Missile *missile);
     static Scene* scene() { return s_scene; }
     static void setScene(Scene *scene) { s_scene = scene; }
-    void removeMissile(Missile *missile);
     NameKey upKey() const { return m_upKey; }
     NameKey downKey() const { return m_downKey; }
     NameKey leftKey() const { return m_leftKey; }
@@ -47,6 +47,7 @@ protected:
 private:
     std::map<Missile*, Enemy*> getCollisionMapWithEnemies() const;
     std::list<Missile*> getEnemyMissileList() const;
+    std::list<Missile*> getPlayerMissileList() const;
 
     FlagItem *m_flagItem;
     QTimer *m_timer;

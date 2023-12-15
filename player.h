@@ -10,6 +10,8 @@ public:
     virtual ~Player();
     static Player* player() { return s_player; }
     static void setPlayer(Player *player) { s_player = player; }
+    void addLife();
+    void reduceLife();
 protected:
     void loadImageFromResource() override;
     void setSpeed() override;

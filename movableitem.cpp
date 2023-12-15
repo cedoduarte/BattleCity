@@ -10,6 +10,7 @@ MovableItem::MovableItem(QGraphicsItem *parent)
     m_moveLeftEnabled = true;
     m_moveUpEnabled = true;
     m_moveDownEnabled = true;
+    m_canMove = true;
 }
 
 MovableItem::~MovableItem()
@@ -18,7 +19,7 @@ MovableItem::~MovableItem()
 
 void MovableItem::moveRight()
 {
-    if (m_moveRightEnabled)
+    if (m_moveRightEnabled && m_canMove)
     {
         setDirection(EAST);
         moveBy(m_xSpeed, 0.0);
@@ -27,7 +28,7 @@ void MovableItem::moveRight()
 
 void MovableItem::moveLeft()
 {
-    if (m_moveLeftEnabled)
+    if (m_moveLeftEnabled && m_canMove)
     {
         setDirection(WEST);
         moveBy(-m_xSpeed, 0.0);
@@ -36,7 +37,7 @@ void MovableItem::moveLeft()
 
 void MovableItem::moveUp()
 {
-    if (m_moveUpEnabled)
+    if (m_moveUpEnabled && m_canMove)
     {
         setDirection(NORTH);
         moveBy(0.0, -m_ySpeed);
@@ -45,7 +46,7 @@ void MovableItem::moveUp()
 
 void MovableItem::moveDown()
 {
-    if (m_moveDownEnabled)
+    if (m_moveDownEnabled && m_canMove)
     {
         setDirection(SOUTH);
         moveBy(0.0, m_ySpeed);

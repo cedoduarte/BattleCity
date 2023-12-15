@@ -33,13 +33,16 @@ public:
     void setMoveUpEnabled(bool enabled) { m_moveUpEnabled = enabled; }
     void setMoveDownEnabled(bool enabled) { m_moveDownEnabled = enabled; }
     int direction() const { return m_direction; }
+    void setDirection(int direction);
+    void setCanMove(bool canMove) { m_canMove = canMove; }
+    bool canMove() const { return m_canMove; }
 protected:
     virtual void setSpeed() = 0;
+
     double m_xSpeed;
     double m_ySpeed;
-
-    void setDirection(int direction);
     int m_direction;
+    bool m_canMove;
 private:
     void changeDirectionFromNorthTo(int to);
     void changeDirectionFromSouthTo(int to);

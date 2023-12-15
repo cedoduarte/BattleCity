@@ -16,6 +16,16 @@ Player::~Player()
 {
 }
 
+void Player::addLife()
+{
+    m_lifeCount++;
+}
+
+void Player::reduceLife()
+{
+    m_lifeCount--;
+}
+
 void Player::loadImageFromResource()
 {
     setPixmap(QPixmap(":/img/player.png"));
