@@ -19,6 +19,10 @@ public:
     static void setTankMissileSpeed(double speed) { s_tankMissileSpeed = speed; }
     void changeDirection();
     void onShootTimeOut();
+    void changeDirectionAvoiding(int direction);
+    void changeDirectionIfNeeded(QGraphicsRectItem *boundaryRect, int direction);
+    void updateSpeed() { setSpeed(); }
+    void updateShootSpeed() { setShootSpeed(); }
 protected:
     void loadImageFromResource() override;
     void setSpeed() override;

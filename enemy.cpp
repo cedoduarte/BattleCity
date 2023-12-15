@@ -1,5 +1,7 @@
 #include "enemy.h"
 #include "util.h"
+#include "scene.h"
+#include "player.h"
 
 double Enemy::s_tankSpeed = 5.0;
 double Enemy::s_tankMissileSpeed = 20.0;
@@ -15,11 +17,11 @@ Enemy::Enemy(QGraphicsItem *parent)
 
     m_directionTimer = new DirectionTimer;
     m_directionTimer->setEnemy(this);
-    m_directionTimer->start(1500); // cambia de dirección cada segundo y medio
+    m_directionTimer->start(5000); // cambia de dirección cada 5 segundos
 
     m_shootTimer = new ShootTimer;
     m_shootTimer->setEnemy(this);
-    m_shootTimer->start();
+    m_shootTimer->start(2000);
 }
 
 Enemy::~Enemy()
@@ -61,5 +63,31 @@ void Enemy::changeDirection()
 
 void Enemy::onShootTimeOut()
 {
-// todo...
+    shoot();
+}
+
+void Enemy::changeDirectionAvoiding(int direction)
+{
+    do {
+        changeDirection();
+    }
+    while (m_direction == direction);
+}
+
+void Enemy::changeDirectionIfNeeded(QGraphicsRectItem *boundaryRect, int direction)
+{
+    if (collidesWithItem(Player::player()) || collidesWithItem(boundaryRect))
+    {
+        changeDirectionAvoiding(direction);
+    }
+    else
+    {
+        for (Enemy *sibling : Scene::scene()->getEnemySiblings(this))
+        {
+            if (collidesWithItem(sibling))
+            {
+                changeDirectionAvoiding(direction);
+            }
+        }
+    }
 }

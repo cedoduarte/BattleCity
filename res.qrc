@@ -8,5 +8,6 @@
         <file>img/life.png</file>
         <file>img/mute.png</file>
         <file>img/plus.png</file>
+        <file>img/flag.png</file>
     </qresource>
 </RCC>

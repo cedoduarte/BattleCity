@@ -21,6 +21,9 @@ private slots:
     void on_missile_lessSpeedButton_clicked();
     void on_missile_moreSpeedButton_clicked();
 private:
+    void updateTankSpeed(double speed);
+    void updateShootSpeed(double speed);
+
     Ui::EnemyHUD *ui;
 };
 

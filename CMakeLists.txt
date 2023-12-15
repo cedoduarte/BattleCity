@@ -32,6 +32,7 @@ set(PROJECT_SOURCES
         keycombobox.h keycombobox.cpp
         namekey.h namekey.cpp
         util.h util.cpp
+        flagitem.h flagitem.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

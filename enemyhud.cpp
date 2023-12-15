@@ -1,6 +1,7 @@
 #include "enemyhud.h"
 #include "ui_enemyhud.h"
 #include "enemy.h"
+#include "scene.h"
 
 EnemyHUD::EnemyHUD(QWidget *parent)
     : QWidget(parent)
@@ -30,14 +31,14 @@ void EnemyHUD::on_tank_lessSpeedButton_clicked()
     {
         speed = 1;
     }
-    Enemy::setTankSpeed(speed);
+    updateTankSpeed(speed);
     ui->tankSpeed_lcdNumber->display(QString::number(speed));
 }
 
 void EnemyHUD::on_tank_moreSpeedButton_clicked()
 {
     const double speed = Enemy::tankSpeed() + 1;
-    Enemy::setTankSpeed(speed);
+    updateTankSpeed(speed);
     ui->tankSpeed_lcdNumber->display(QString::number(speed));
 }
 
@@ -48,14 +49,32 @@ void EnemyHUD::on_missile_lessSpeedButton_clicked()
     {
         speed = 1;
     }
-    Enemy::setTankMissileSpeed(speed);
+    updateShootSpeed(speed);
     ui->missileSpeed_lcdNumber->display(QString::number(speed));
 }
 
 void EnemyHUD::on_missile_moreSpeedButton_clicked()
 {
     const double speed = Enemy::tankMissileSpeed() + 1;
-    Enemy::setTankMissileSpeed(speed);
+    updateShootSpeed(speed);
     ui->missileSpeed_lcdNumber->display(QString::number(speed));
+}
+
+void EnemyHUD::updateTankSpeed(double speed)
+{
+    Enemy::setTankSpeed(speed);
+    for (Enemy *enemy : Scene::scene()->enemyList())
+    {
+        enemy->updateSpeed();
+    }
+}
+
+void EnemyHUD::updateShootSpeed(double speed)
+{
+    Enemy::setTankMissileSpeed(speed);
+    for (Enemy *enemy : Scene::scene()->enemyList())
+    {
+        enemy->updateShootSpeed();
+    }
 }
 

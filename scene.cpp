@@ -6,6 +6,7 @@
 #include "playerhud.h"
 #include "enemyhud.h"
 #include "keyhud.h"
+#include "flagitem.h"
 
 #include <QTimer>
 #include <vector>
@@ -19,13 +20,15 @@ Scene* Scene::s_scene = nullptr;
 Scene::Scene(const QRectF &sceneRect, QObject *parent)
     : QGraphicsScene(parent)
 {
+    setBackgroundBrush(QBrush(QColor(0x100000)));
     setSceneRect(sceneRect);
-    addRect(sceneRect);
+    QColor sceneColor(0x403c3b);
+    addRect(sceneRect, QPen(sceneColor), QBrush(sceneColor));
 
-    m_topRect = addRect(0.0, -10.0, 800.0, 10.0);
-    m_bottomRect = addRect(0.0, 600.0, 800.0, 10.0);
-    m_leftRect = addRect(-10.0, 0.0, 10.0, 600.0);
-    m_rightRect = addRect(800.0, 0.0, 10.0, 600.0);
+    m_topRect = addRect(0.0, -10.0, 800.0, 10.0, QPen(sceneColor), QBrush(sceneColor));
+    m_bottomRect = addRect(0.0, 600.0, 800.0, 10.0, QPen(sceneColor), QBrush(sceneColor));
+    m_leftRect = addRect(-10.0, 0.0, 10.0, 600.0, QPen(sceneColor), QBrush(sceneColor));
+    m_rightRect = addRect(800.0, 0.0, 10.0, 600.0, QPen(sceneColor), QBrush(sceneColor));
 
     m_mouseTrackerProxy = addWidget(new MouseTracker);
     m_mouseTrackerProxy->setPos(-150.0, 0.0);
@@ -47,9 +50,12 @@ Scene::Scene(const QRectF &sceneRect, QObject *parent)
 
     m_player = new Player;
     Player::setPlayer(m_player);
-
-    m_player->setPos(50, 50);
+    m_player->setPos(310.0, 555.0);
     addItem(m_player);
+
+    m_flagItem = new FlagItem;
+    m_flagItem->setPos(350.0, 540.0);
+    addItem(m_flagItem);
 
     Enemy *enemy = new Enemy;
     enemy->setPos(100, 100);
@@ -109,6 +115,32 @@ void Scene::startTimer(int msecs)
     m_timer->start(msecs);
 }
 
+std::list<Enemy*> Scene::getEnemySiblings(Enemy *enemy) const
+{
+    std::list<Enemy*> siblings;
+    for (Enemy *sibling : m_enemyList)
+    {
+        if (sibling != enemy)
+        {
+            siblings.push_back(sibling);
+        }
+    }
+    return siblings;
+}
+
+std::list<Missile *> Scene::getEnemyMissileList() const
+{
+    std::list<Missile*> enemyMissileList;
+    for (Missile *missile : m_missileList)
+    {
+        if (!missile->shootedByPlayer())
+        {
+            enemyMissileList.push_back(missile);
+        }
+    }
+    return enemyMissileList;
+}
+
 void Scene::timeOut()
 {
     // collisions between missiles and bounds
@@ -142,12 +174,25 @@ void Scene::timeOut()
         delete it->second;
     }
 
+    // collision between enemies' missiles and player
+    for (Missile *missile : getEnemyMissileList())
+    {
+        if (missile->collidesWithItem(m_player))
+        {
+            removeItem(missile);
+            m_missileList.remove(missile);
+            delete missile;
+            // todo... quitar una vida al player y moverlo a la posición inicial
+        }
+    }
+
     // player collides with bounds
     m_player->setMoveUpEnabled(!m_player->collidesWithItem(m_topRect));
     m_player->setMoveDownEnabled(!m_player->collidesWithItem(m_bottomRect));
     m_player->setMoveLeftEnabled(!m_player->collidesWithItem(m_leftRect));
     m_player->setMoveRightEnabled(!m_player->collidesWithItem(m_rightRect));
 
+    // enemies are moved
     for (Enemy *enemy : m_enemyList)
     {
         switch (enemy->direction())
@@ -155,51 +200,31 @@ void Scene::timeOut()
             case MovableItem::NORTH:
             {
                 enemy->moveUp();
-                if (enemy->collidesWithItem(m_topRect))
-                {
-                    do {
-                        enemy->changeDirection();
-                    }
-                    while (enemy->direction() == MovableItem::NORTH);
-                }
+                enemy->changeDirectionIfNeeded(m_topRect, MovableItem::NORTH);
                 break;
             }
             case MovableItem::SOUTH:
             {
                 enemy->moveDown();
-                if (enemy->collidesWithItem(m_bottomRect))
-                {
-                    do {
-                        enemy->changeDirection();
-                    } while (enemy->direction() == MovableItem::SOUTH);
-                }
+                enemy->changeDirectionIfNeeded(m_bottomRect, MovableItem::SOUTH);
                 break;
             }
             case MovableItem::EAST:
             {
                 enemy->moveRight();
-                if (enemy->collidesWithItem(m_rightRect))
-                {
-                    do {
-                        enemy->changeDirection();
-                    } while (enemy->direction() == MovableItem::EAST);
-                }
+                enemy->changeDirectionIfNeeded(m_rightRect, MovableItem::EAST);
                 break;
             }
             case MovableItem::WEST:
             {
                 enemy->moveLeft();
-                if (enemy->collidesWithItem(m_leftRect))
-                {
-                    do {
-                        enemy->changeDirection();
-                    } while (enemy->direction() == MovableItem::WEST);
-                }
+                enemy->changeDirectionIfNeeded(m_leftRect, MovableItem::WEST);
                 break;
             }
         }
     }
 
+    // missiles are moved
     for (Missile *missile : m_missileList)
     {
         missile->move();

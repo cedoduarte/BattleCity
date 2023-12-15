@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 
+class FlagItem;
 class Enemy;
 class Player;
 class Missile;
@@ -36,10 +37,8 @@ public:
     void setShootKey(const NameKey &key) { m_shootKey = key; }
     void loadHUDs();
     void startTimer(int msecs);
-    QGraphicsRectItem *topRectItem() const { return m_topRect; }
-    QGraphicsRectItem *bottomRectItem() const { return m_bottomRect; }
-    QGraphicsRectItem *leftRectItem() const { return m_leftRect; }
-    QGraphicsRectItem *rightRectItem() const { return m_rightRect; }
+    std::list<Enemy*> getEnemySiblings(Enemy *enemy) const;
+    const std::list<Enemy*>& enemyList() const { return m_enemyList; }
 private slots:
     void timeOut();
 protected:
@@ -47,7 +46,9 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 private:
     std::map<Missile*, Enemy*> getCollisionMapWithEnemies() const;
+    std::list<Missile*> getEnemyMissileList() const;
 
+    FlagItem *m_flagItem;
     QTimer *m_timer;
     Player *m_player;
     std::list<Missile*> m_missileList;
