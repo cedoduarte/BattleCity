@@ -1,12 +1,13 @@
 #include "scene.h"
-#include "player.h"
-#include "enemy.h"
-#include "missile.h"
 #include "mousetracker.h"
-#include "playerhud.h"
-#include "enemyhud.h"
-#include "keyhud.h"
-#include "flagitem.h"
+#include "items/player.h"
+#include "items/enemy.h"
+#include "items/missile.h"
+#include "items/flagitem.h"
+#include "items/brick.h"
+#include "huds/playerhud.h"
+#include "huds/enemyhud.h"
+#include "huds/keyhud.h"
 
 #include <QTimer>
 #include <vector>
@@ -72,12 +73,36 @@ Scene::Scene(const QRectF &sceneRect, QObject *parent)
     m_enemyList.push_back(enemy);
     addItem(enemy);
 
+    addBrickSet(150.0, 150.0);
+    addBrickSet(0.0, 0.0);
+
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &Scene::timeOut);
 }
 
 Scene::~Scene()
 {
+}
+
+void Scene::addBrickSet(double x, double y)
+{
+    double ix, iy = y;
+    int xCounter, yCounter = 0;
+    while (yCounter < 5)
+    {
+        xCounter = 0;
+        ix = x + 10.0;
+        while (xCounter < 5)
+        {
+            Brick *newBrick = new Brick;
+            newBrick->setPos(ix, iy);
+            addItem(newBrick);
+            ix += 10.0;
+            xCounter++;
+        }
+        iy += 5.0;
+        yCounter++;
+    }
 }
 
 void Scene::addMissile(Missile *missile)

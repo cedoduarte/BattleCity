@@ -1,6 +1,6 @@
 #include "enemyhud.h"
 #include "ui_enemyhud.h"
-#include "enemy.h"
+#include "../items/enemy.h"
 #include "scene.h"
 
 EnemyHUD::EnemyHUD(QWidget *parent)

@@ -1,6 +1,6 @@
 #include "playerhud.h"
 #include "ui_playerhud.h"
-#include "player.h"
+#include "../items/player.h"
 
 PlayerHUD::PlayerHUD(QWidget *parent)
     : QWidget(parent)

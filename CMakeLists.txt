@@ -19,20 +19,35 @@ set(PROJECT_SOURCES
         mainwindow.ui
         scene.h scene.cpp
         res.qrc
-        tank.h tank.cpp
-        player.h player.cpp
-        enemy.h enemy.cpp
-        missile.h missile.cpp
-        imageitem.h imageitem.cpp
-        movableitem.h movableitem.cpp
+        items/tank.h
+        items/tank.cpp
+        items/player.h
+        items/player.cpp
+        items/enemy.h 
+        items/enemy.cpp
+        items/missile.h 
+        items/missile.cpp
+        items/imageitem.h
+        items/imageitem.cpp
+        items/movableitem.h
+        items/movableitem.cpp
+        items/flagitem.h 
+        items/flagitem.cpp
+        items/brick.h
+        items/brick.cpp
         mousetracker.h mousetracker.cpp mousetracker.ui
-        playerhud.h playerhud.cpp playerhud.ui
-        enemyhud.h enemyhud.cpp enemyhud.ui
-        keyhud.h keyhud.cpp keyhud.ui
+        huds/playerhud.h
+        huds/playerhud.cpp
+        huds/playerhud.ui
+        huds/enemyhud.h
+        huds/enemyhud.cpp
+        huds/enemyhud.ui
+        huds/keyhud.h
+        huds/keyhud.cpp
+        huds/keyhud.ui
         keycombobox.h keycombobox.cpp
         namekey.h namekey.cpp
         util.h util.cpp
-        flagitem.h flagitem.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

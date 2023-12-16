@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 
+class Brick;
 class Tank;
 class FlagItem;
 class Enemy;
@@ -48,6 +49,7 @@ private:
     std::map<Missile*, Enemy*> getCollisionMapWithEnemies() const;
     std::list<Missile*> getEnemyMissileList() const;
     std::list<Missile*> getPlayerMissileList() const;
+    void addBrickSet(double x, double y);
 
     FlagItem *m_flagItem;
     QTimer *m_timer;
