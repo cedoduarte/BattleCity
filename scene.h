@@ -45,17 +45,19 @@ private slots:
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 private:
     std::map<Missile*, Enemy*> getCollisionMapWithEnemies() const;
     std::list<Missile*> getEnemyMissileList() const;
     std::list<Missile*> getPlayerMissileList() const;
-    void addBrickSet(double x, double y);
+    void addBrickSet(const std::list<Brick*> &brickSet);
 
     FlagItem *m_flagItem;
     QTimer *m_timer;
     Player *m_player;
     std::list<Missile*> m_missileList;
     std::list<Enemy*> m_enemyList;
+    std::list<Brick*> m_brickList;
     QGraphicsProxyWidget *m_mouseTrackerProxy;
     QGraphicsProxyWidget *m_playerHUDProxy;
     QGraphicsProxyWidget *m_enemyHUDProxy;

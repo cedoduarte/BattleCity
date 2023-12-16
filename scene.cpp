@@ -21,7 +21,7 @@ Scene* Scene::s_scene = nullptr;
 Scene::Scene(const QRectF &sceneRect, QObject *parent)
     : QGraphicsScene(parent)
 {
-    setBackgroundBrush(QBrush(QColor(0x100000)));
+    setBackgroundBrush(QColor(0x100000));
     setSceneRect(sceneRect);
     QColor sceneColor(0x403c3b);
     addRect(sceneRect, QPen(sceneColor), QBrush(sceneColor));
@@ -51,12 +51,8 @@ Scene::Scene(const QRectF &sceneRect, QObject *parent)
 
     m_player = new Player;
     Player::setPlayer(m_player);
-    m_player->setPos(310.0, 555.0);
+    m_player->setPos(250.0, 550.0);
     addItem(m_player);
-
-    m_flagItem = new FlagItem;
-    m_flagItem->setPos(350.0, 540.0);
-    addItem(m_flagItem);
 
     Enemy *enemy = new Enemy;
     enemy->setPos(0.0, 0.0);
@@ -73,8 +69,13 @@ Scene::Scene(const QRectF &sceneRect, QObject *parent)
     m_enemyList.push_back(enemy);
     addItem(enemy);
 
-    addBrickSet(150.0, 150.0);
-    addBrickSet(0.0, 0.0);
+    m_flagItem = new FlagItem;
+    m_flagItem->setPos(350.0, 550.0);
+    addItem(m_flagItem);
+
+    addBrickSet(Brick::createBrickSet(300.0, 527.0, 12, 3));
+    addBrickSet(Brick::createBrickSet(415.0, 527.0, 12, 3));
+    addBrickSet(Brick::createBrickSet(330.0, 527.0, 3, 9));
 
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &Scene::timeOut);
@@ -82,27 +83,6 @@ Scene::Scene(const QRectF &sceneRect, QObject *parent)
 
 Scene::~Scene()
 {
-}
-
-void Scene::addBrickSet(double x, double y)
-{
-    double ix, iy = y;
-    int xCounter, yCounter = 0;
-    while (yCounter < 5)
-    {
-        xCounter = 0;
-        ix = x + 10.0;
-        while (xCounter < 5)
-        {
-            Brick *newBrick = new Brick;
-            newBrick->setPos(ix, iy);
-            addItem(newBrick);
-            ix += 10.0;
-            xCounter++;
-        }
-        iy += 5.0;
-        yCounter++;
-    }
 }
 
 void Scene::addMissile(Missile *missile)
@@ -160,6 +140,15 @@ std::list<Missile *> Scene::getPlayerMissileList() const
         }
     }
     return playerMissileList;
+}
+
+void Scene::addBrickSet(const std::list<Brick *> &brickSet)
+{
+    for (Brick *brick : brickSet)
+    {
+        addItem(brick);
+        m_brickList.push_back(brick);
+    }
 }
 
 void Scene::timeOut()
@@ -321,6 +310,14 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     dynamic_cast<MouseTracker*>(m_mouseTrackerProxy->widget())->display(event->scenePos());
     QGraphicsScene::mouseMoveEvent(event);
+}
+
+void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    const double x = event->scenePos().x();
+    const double y = event->scenePos().y();
+    addBrickSet(Brick::createBrickSet(x, y, 10, 5));
+    event->accept();
 }
 
 std::map<Missile*, Enemy*> Scene::getCollisionMapWithEnemies() const

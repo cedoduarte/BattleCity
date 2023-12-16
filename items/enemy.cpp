@@ -17,7 +17,7 @@ Enemy::Enemy(QGraphicsItem *parent)
 
     m_directionTimer = new DirectionTimer;
     m_directionTimer->setEnemy(this);
-    m_directionTimer->start(5000); // cambia de dirección cada 5 segundos
+    m_directionTimer->start(5000);
 
     m_shootTimer = new ShootTimer;
     m_shootTimer->setEnemy(this);

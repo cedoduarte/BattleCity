@@ -10,6 +10,5 @@ bool Util::randomBool()
 
 int Util::randomItem(const std::vector<int> &collection)
 {
-    const int index = QRandomGenerator::global()->bounded(collection.size());
-    return collection[index];
+    return collection[QRandomGenerator::global()->bounded(collection.size())];
 }
