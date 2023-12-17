@@ -33,8 +33,8 @@ void Player::loadImageFromResource()
 
 void Player::setSpeed()
 {
-    setSpeedX(5.0);
-    setSpeedY(5.0);
+    setSpeedX(10.0);
+    setSpeedY(10.0);
 }
 
 void Player::setLifes()

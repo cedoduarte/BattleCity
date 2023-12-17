@@ -24,7 +24,7 @@ Enemy::Enemy(QGraphicsItem *parent)
 
     m_shootTimer = new ShootTimer;
     m_shootTimer->setEnemy(this);
-    m_shootTimer->start(2000);
+    m_shootTimer->start(3000);
 }
 
 Enemy::~Enemy()

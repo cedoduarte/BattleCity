@@ -41,6 +41,7 @@ public:
     std::list<Enemy*> getEnemySiblings(Enemy *enemy) const;
     const std::list<Enemy*>& enemyList() const { return m_enemyList; }
     const std::list<Brick*>& brickList() const { return m_brickList; }
+    int enemyCount() const { return m_enemyCount; }
 private slots:
     void timeOut();
 protected:
@@ -53,7 +54,7 @@ private:
     void addBrickSet(const std::list<Brick*> &brickSet);
     void missileCollisions();
     void playerCollisions();
-    void enemyCollisions();
+    void enemyMoveAndCollisions();
     void createBrickBlocks();
     void createEnemies();
     void createKeys();
@@ -73,6 +74,7 @@ private:
     void collisionsBetweenMissiles();
     void collisionsBetweenMissilesAndEnemies();
     void collisionsBetweenMissilesAndPlayerAndFlag();
+    void addMissingEnemies();
 
     FlagItem *m_flagItem;
     QTimer *m_timer;
@@ -94,6 +96,7 @@ private:
     NameKey m_leftKey;
     NameKey m_rightKey;
     NameKey m_shootKey;
+    int m_enemyCount;
 };
 
 #endif // SCENE_H

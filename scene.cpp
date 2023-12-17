@@ -55,20 +55,25 @@ void Scene::createBrickBlocks()
 
 void Scene::createEnemies()
 {
+    m_enemyCount = 20;
+
     Enemy *enemy = new Enemy;
     enemy->setPos(0.0, 0.0);
     m_enemyList.push_back(enemy);
     addItem(enemy);
+    m_enemyCount--;
 
     enemy = new Enemy;
     enemy->setPos(350.0, 0.0);
     m_enemyList.push_back(enemy);
     addItem(enemy);
+    m_enemyCount--;
 
     enemy = new Enemy;
     enemy->setPos(730.0, 0.0);
     m_enemyList.push_back(enemy);
     addItem(enemy);
+    m_enemyCount--;
 }
 
 void Scene::createKeys()
@@ -109,7 +114,6 @@ QColor Scene::setupScene(const QRectF &sceneRect)
     setSceneRect(sceneRect);
     QColor sceneColor(0x403c3b);
     addRect(sceneRect, QPen(sceneColor), QBrush(sceneColor));
-
     return sceneColor;
 }
 
@@ -291,7 +295,7 @@ void Scene::collisionsBetweenMissilesAndEnemies()
 
         removeItem(it->second);
         m_enemyList.remove(it->second);
-        delete it->second;
+        delete it->second;        
     }
 }
 
@@ -333,7 +337,6 @@ void Scene::collisionsBetweenMissilesAndPlayerAndFlag()
 
 void Scene::missileCollisions()
 {
-    moveMissiles();
     collitionsBetweenMissilesAndBounds();
     collisionsBetweenMissilesAndBricks();
     collisionsBetweenMissiles();
@@ -422,7 +425,7 @@ void Scene::playerCollisions()
     playerCollidesWithEnemies();
 }
 
-void Scene::enemyCollisions()
+void Scene::enemyMoveAndCollisions()
 {
     for (Enemy *enemy : m_enemyList)
     {
@@ -456,11 +459,32 @@ void Scene::enemyCollisions()
     }
 }
 
+void Scene::addMissingEnemies()
+{
+    if (m_enemyList.size() < 4)
+    {
+        Enemy *enemy = new Enemy;
+        enemy->setPos(0.0, 0.0);
+        m_enemyList.push_back(enemy);
+        addItem(enemy);
+        m_enemyCount--;
+        dynamic_cast<EnemyHUD*>(m_enemyHUDProxy->widget())->loadData();
+    }
+}
+
 void Scene::timeOut()
 {
+    moveMissiles();
     missileCollisions();
     playerCollisions();
-    enemyCollisions();
+    enemyMoveAndCollisions();
+    addMissingEnemies();
+    if (m_enemyCount == 0)
+    {
+        m_timer->stop();
+        // you win!
+    }
+    // todo... agregar efectos de sonido
 }
 
 void Scene::keyPressEvent(QKeyEvent *event)

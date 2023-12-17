@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_scene = new Scene(sceneRect, this);
     Scene::setScene(m_scene);
     m_scene->loadHUDs();
-    m_scene->startTimer(50);
+    m_scene->startTimer(30);
     ui->graphicsView->setScene(m_scene);
     ui->graphicsView->setMouseTracking(true);
 }

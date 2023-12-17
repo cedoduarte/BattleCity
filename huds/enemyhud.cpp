@@ -22,6 +22,9 @@ void EnemyHUD::loadData()
 
     const double missileSpeed = Enemy::tankMissileSpeed();
     ui->missileSpeed_lcdNumber->display(QString::number(missileSpeed));
+
+    const int enemyCount = Scene::scene()->enemyCount();
+    ui->enemyCount_lcdNumber->display(QString::number(enemyCount));
 }
 
 void EnemyHUD::on_tank_lessSpeedButton_clicked()

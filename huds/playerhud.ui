@@ -58,7 +58,7 @@
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="res.qrc">
+         <iconset resource="../res.qrc">
           <normaloff>:/img/less.png</normaloff>:/img/less.png</iconset>
         </property>
        </widget>
@@ -69,7 +69,7 @@
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="res.qrc">
+         <iconset resource="../res.qrc">
           <normaloff>:/img/plus.png</normaloff>:/img/plus.png</iconset>
         </property>
        </widget>
@@ -90,7 +90,7 @@
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="res.qrc">
+         <iconset resource="../res.qrc">
           <normaloff>:/img/less.png</normaloff>:/img/less.png</iconset>
         </property>
        </widget>
@@ -101,7 +101,7 @@
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="res.qrc">
+         <iconset resource="../res.qrc">
           <normaloff>:/img/plus.png</normaloff>:/img/plus.png</iconset>
         </property>
        </widget>
@@ -146,7 +146,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="res.qrc"/>
+  <include location="../res.qrc"/>
  </resources>
  <connections/>
 </ui>
