@@ -2,6 +2,9 @@
 #include "util.h"
 #include "scene.h"
 #include "player.h"
+#include "brick.h"
+
+#include <set>
 
 double Enemy::s_tankSpeed = 5.0;
 double Enemy::s_tankMissileSpeed = 20.0;
@@ -68,26 +71,42 @@ void Enemy::onShootTimeOut()
 
 void Enemy::changeDirectionAvoiding(int direction)
 {
-    do {
-        changeDirection();
+    std::vector<int> directions { NORTH, SOUTH, EAST, WEST };
+    int i = 0;
+    while (i < directions.size())
+    {
+        if (directions[i] == direction)
+        {
+            break;
+        }
+        i++;
     }
-    while (m_direction == direction);
+    auto it = directions.begin();
+    std::advance(it, i);
+    directions.erase(it);
+    setDirection(Util::randomItem(directions));
 }
 
 void Enemy::changeDirectionIfNeeded(QGraphicsRectItem *boundaryRect, int direction)
 {
-    if (collidesWithItem(Player::player()) || collidesWithItem(boundaryRect))
+    if (collidesWithItem(boundaryRect))
     {
         changeDirectionAvoiding(direction);
     }
-    else
+    if (collidesWithItem(Player::player()))
     {
-        for (Enemy *sibling : Scene::scene()->getEnemySiblings(this))
+        changeDirectionAvoiding(direction);
+    }
+    std::set<Brick*> collidingBrickSet;
+    for (Brick *brick : Scene::scene()->brickList())
+    {
+        if (collidesWithItem(brick))
         {
-            if (collidesWithItem(sibling))
-            {
-                changeDirectionAvoiding(direction);
-            }
+            collidingBrickSet.insert(brick);
         }
+    }
+    if (collidingBrickSet.size() > 0)
+    {
+        changeDirectionAvoiding(direction);
     }
 }

@@ -40,17 +40,39 @@ public:
     void startTimer(int msecs);
     std::list<Enemy*> getEnemySiblings(Enemy *enemy) const;
     const std::list<Enemy*>& enemyList() const { return m_enemyList; }
+    const std::list<Brick*>& brickList() const { return m_brickList; }
 private slots:
     void timeOut();
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 private:
     std::map<Missile*, Enemy*> getCollisionMapWithEnemies() const;
     std::list<Missile*> getEnemyMissileList() const;
     std::list<Missile*> getPlayerMissileList() const;
     void addBrickSet(const std::list<Brick*> &brickSet);
+    void missileCollisions();
+    void playerCollisions();
+    void enemyCollisions();
+    void createBrickBlocks();
+    void createEnemies();
+    void createKeys();
+    void createHUDs();
+    void createBounds(QColor sceneColor);
+    QColor setupScene(const QRectF &sceneRect);
+    void createPlayer();
+    void createFlagItem();
+    void createTimer();
+    void playerCollidesWithBounds();
+    void playerCollidesWithBricks();
+    void playerCollidesWithEnemies();
+    void init(const QRectF &sceneRect);
+    void moveMissiles();
+    void collitionsBetweenMissilesAndBounds();
+    void collisionsBetweenMissilesAndBricks();
+    void collisionsBetweenMissiles();
+    void collisionsBetweenMissilesAndEnemies();
+    void collisionsBetweenMissilesAndPlayerAndFlag();
 
     FlagItem *m_flagItem;
     QTimer *m_timer;

@@ -9,6 +9,7 @@
 #include "huds/enemyhud.h"
 #include "huds/keyhud.h"
 
+#include <set>
 #include <QTimer>
 #include <vector>
 #include <QDebug>
@@ -21,39 +22,39 @@ Scene* Scene::s_scene = nullptr;
 Scene::Scene(const QRectF &sceneRect, QObject *parent)
     : QGraphicsScene(parent)
 {
-    setBackgroundBrush(QColor(0x100000));
-    setSceneRect(sceneRect);
-    QColor sceneColor(0x403c3b);
-    addRect(sceneRect, QPen(sceneColor), QBrush(sceneColor));
+    init(sceneRect);
+}
 
-    m_topRect = addRect(0.0, -10.0, 800.0, 10.0, QPen(sceneColor), QBrush(sceneColor));
-    m_bottomRect = addRect(0.0, 600.0, 800.0, 10.0, QPen(sceneColor), QBrush(sceneColor));
-    m_leftRect = addRect(-10.0, 0.0, 10.0, 600.0, QPen(sceneColor), QBrush(sceneColor));
-    m_rightRect = addRect(800.0, 0.0, 10.0, 600.0, QPen(sceneColor), QBrush(sceneColor));
+Scene::~Scene()
+{
+}
 
-    m_mouseTrackerProxy = addWidget(new MouseTracker);
-    m_mouseTrackerProxy->setPos(-150.0, 0.0);
+void Scene::init(const QRectF &sceneRect)
+{
+    QColor sceneColor = setupScene(sceneRect);
+    createBounds(sceneColor);
+    createHUDs();
+    createKeys();
+    createPlayer();
+    createEnemies();
+    createFlagItem();
+    createBrickBlocks();
+    createTimer();
+}
 
-    m_playerHUDProxy = addWidget(new PlayerHUD);
-    m_playerHUDProxy->setPos(-280.0, 100.0);
+void Scene::createBrickBlocks()
+{
+    addBrickSet(Brick::createBrickSet(300.0, 527.0, 12, 3));
+    addBrickSet(Brick::createBrickSet(415.0, 527.0, 12, 3));
+    addBrickSet(Brick::createBrickSet(330.0, 527.0, 3, 9));
+    addBrickSet(Brick::createBrickSet(14.0, 50.0, 10, 75));
+    addBrickSet(Brick::createBrickSet(350.0, 100.0, 80, 5));
+    addBrickSet(Brick::createBrickSet(14.0, 200.0, 10, 75));
+    addBrickSet(Brick::createBrickSet(14.0, 350.0, 10, 75));
+}
 
-    m_enemyHUDProxy = addWidget(new EnemyHUD);
-    m_enemyHUDProxy->setPos(-280.0, 266.0);
-
-    m_keyHUDProxy = addWidget(new KeyHUD);
-    m_keyHUDProxy->setPos(826.0, 0.0);
-
-    m_upKey = NameKey::getNameKey(Qt::Key_Up);
-    m_downKey = NameKey::getNameKey(Qt::Key_Down);
-    m_leftKey = NameKey::getNameKey(Qt::Key_Left);
-    m_rightKey = NameKey::getNameKey(Qt::Key_Right);
-    m_shootKey = NameKey::getNameKey(Qt::Key_X);
-
-    m_player = new Player;
-    Player::setPlayer(m_player);
-    m_player->setPos(250.0, 550.0);
-    addItem(m_player);
-
+void Scene::createEnemies()
+{
     Enemy *enemy = new Enemy;
     enemy->setPos(0.0, 0.0);
     m_enemyList.push_back(enemy);
@@ -68,21 +69,69 @@ Scene::Scene(const QRectF &sceneRect, QObject *parent)
     enemy->setPos(730.0, 0.0);
     m_enemyList.push_back(enemy);
     addItem(enemy);
+}
 
+void Scene::createKeys()
+{
+    m_upKey = NameKey::getNameKey(Qt::Key_Up);
+    m_downKey = NameKey::getNameKey(Qt::Key_Down);
+    m_leftKey = NameKey::getNameKey(Qt::Key_Left);
+    m_rightKey = NameKey::getNameKey(Qt::Key_Right);
+    m_shootKey = NameKey::getNameKey(Qt::Key_X);
+}
+
+void Scene::createHUDs()
+{
+    m_mouseTrackerProxy = addWidget(new MouseTracker);
+    m_mouseTrackerProxy->setPos(-150.0, 0.0);
+
+    m_playerHUDProxy = addWidget(new PlayerHUD);
+    m_playerHUDProxy->setPos(-280.0, 100.0);
+
+    m_enemyHUDProxy = addWidget(new EnemyHUD);
+    m_enemyHUDProxy->setPos(-280.0, 266.0);
+
+    m_keyHUDProxy = addWidget(new KeyHUD);
+    m_keyHUDProxy->setPos(826.0, 0.0);
+}
+
+void Scene::createBounds(QColor sceneColor)
+{
+    m_topRect = addRect(0.0, -10.0, 800.0, 10.0, QPen(sceneColor), QBrush(sceneColor));
+    m_bottomRect = addRect(0.0, 600.0, 800.0, 10.0, QPen(sceneColor), QBrush(sceneColor));
+    m_leftRect = addRect(-10.0, 0.0, 10.0, 600.0, QPen(sceneColor), QBrush(sceneColor));
+    m_rightRect = addRect(800.0, 0.0, 10.0, 600.0, QPen(sceneColor), QBrush(sceneColor));
+}
+
+QColor Scene::setupScene(const QRectF &sceneRect)
+{
+    setBackgroundBrush(QColor(0x100000));
+    setSceneRect(sceneRect);
+    QColor sceneColor(0x403c3b);
+    addRect(sceneRect, QPen(sceneColor), QBrush(sceneColor));
+
+    return sceneColor;
+}
+
+void Scene::createPlayer()
+{
+    m_player = new Player;
+    Player::setPlayer(m_player);
+    m_player->setPos(250.0, 550.0);
+    addItem(m_player);
+}
+
+void Scene::createFlagItem()
+{
     m_flagItem = new FlagItem;
     m_flagItem->setPos(350.0, 550.0);
     addItem(m_flagItem);
-
-    addBrickSet(Brick::createBrickSet(300.0, 527.0, 12, 3));
-    addBrickSet(Brick::createBrickSet(415.0, 527.0, 12, 3));
-    addBrickSet(Brick::createBrickSet(330.0, 527.0, 3, 9));
-
-    m_timer = new QTimer(this);
-    connect(m_timer, &QTimer::timeout, this, &Scene::timeOut);
 }
 
-Scene::~Scene()
+void Scene::createTimer()
 {
+    m_timer = new QTimer(this);
+    connect(m_timer, &QTimer::timeout, this, &Scene::timeOut);
 }
 
 void Scene::addMissile(Missile *missile)
@@ -151,51 +200,88 @@ void Scene::addBrickSet(const std::list<Brick *> &brickSet)
     }
 }
 
-void Scene::timeOut()
+void Scene::moveMissiles()
 {
-    // collisions between missiles and bounds
-    auto missileIt = m_missileList.begin();
-    while (missileIt != m_missileList.end())
+    for (Missile *missile : m_missileList)
     {
-        if ((**missileIt).collidesWithItem(m_topRect)
-            || (**missileIt).collidesWithItem(m_bottomRect)
-            || (**missileIt).collidesWithItem(m_leftRect)
-            || (**missileIt).collidesWithItem(m_rightRect))
+        missile->move();
+    }
+}
+
+void Scene::collitionsBetweenMissilesAndBounds()
+{
+    std::set<Missile*> missileToBeDeleted1;
+    for (Missile *missile : m_missileList)
+    {
+        if (missile->collidesWithItem(m_topRect)
+            || missile->collidesWithItem(m_bottomRect)
+            || missile->collidesWithItem(m_leftRect)
+            || missile->collidesWithItem(m_rightRect))
         {
-            removeItem(*missileIt);
-            delete *missileIt;
-            missileIt = m_missileList.erase(missileIt);
-        }
-        else
-        {
-            missileIt++;
+            missileToBeDeleted1.insert(missile);
         }
     }
+    for (Missile *missile : missileToBeDeleted1)
+    {
+        removeItem(missile);
+        m_missileList.remove(missile);
+        delete missile;
+    }
+}
 
-    // collisions between player's missiles and enemies' missiles
-    std::list<Missile*> missileToBeDeleted;
+void Scene::collisionsBetweenMissilesAndBricks()
+{
+    std::set<Missile*> missileToBeDeleted2;
+    std::set<Brick*> brickToBeDeleted;
+    for (Missile *missile : m_missileList)
+    {
+        for (Brick *brick : m_brickList)
+        {
+            if (missile->collidesWithItem(brick))
+            {
+                missileToBeDeleted2.insert(missile);
+                brickToBeDeleted.insert(brick);
+            }
+        }
+    }
+    for (Missile *missile : missileToBeDeleted2)
+    {
+        removeItem(missile);
+        m_missileList.remove(missile);
+        delete missile;
+    }
+    for (Brick *brick : brickToBeDeleted)
+    {
+        removeItem(brick);
+        m_brickList.remove(brick);
+        delete brick;
+    }
+}
+
+void Scene::collisionsBetweenMissiles()
+{
+    std::set<Missile*> missileToBeDeleted3;
     for (Missile *enemyMissile : getEnemyMissileList())
     {
         for (Missile *playerMissile : getPlayerMissileList())
         {
             if (playerMissile->collidesWithItem(enemyMissile))
             {
-                removeItem(playerMissile);
-                m_missileList.remove(playerMissile);
-                missileToBeDeleted.push_back(playerMissile);
-
-                removeItem(enemyMissile);
-                m_missileList.remove(enemyMissile);
-                missileToBeDeleted.push_back(enemyMissile);
+                missileToBeDeleted3.insert(playerMissile);
+                missileToBeDeleted3.insert(enemyMissile);
             }
         }
     }
-    for (Missile *missile : missileToBeDeleted)
+    for (Missile *missile : missileToBeDeleted3)
     {
+        removeItem(missile);
+        m_missileList.remove(missile);
         delete missile;
     }
+}
 
-    // collisions between player's missiles and enemies
+void Scene::collisionsBetweenMissilesAndEnemies()
+{
     auto collisionMap = getCollisionMapWithEnemies();
     for (auto it = collisionMap.begin(); it != collisionMap.end(); it++)
     {
@@ -207,8 +293,11 @@ void Scene::timeOut()
         m_enemyList.remove(it->second);
         delete it->second;
     }
+}
 
-    // collision between enemies' missiles and player
+void Scene::collisionsBetweenMissilesAndPlayerAndFlag()
+{
+    bool gameOver = false;
     for (Missile *missile : getEnemyMissileList())
     {
         if (missile->collidesWithItem(m_player))
@@ -219,23 +308,122 @@ void Scene::timeOut()
 
             m_player->reduceLife();
             dynamic_cast<PlayerHUD*>(m_playerHUDProxy->widget())->loadData();
-            m_player->setPos(310.0, 555.0);
+            m_player->setPos(250.0, 550.0);
             m_player->setDirection(MovableItem::NORTH);
             if (m_player->lifeCount() == 0)
             {
-                // todo...
-                // game over
+                gameOver = true;
+                break;
             }
         }
     }
+    for (Missile *missile : m_missileList)
+    {
+        if (missile->collidesWithItem(m_flagItem))
+        {
+            gameOver = true;
+            break;
+        }
+    }
+    if (gameOver)
+    {
+        m_timer->stop();
+    }
+}
 
-    // player collides with bounds
+void Scene::missileCollisions()
+{
+    moveMissiles();
+    collitionsBetweenMissilesAndBounds();
+    collisionsBetweenMissilesAndBricks();
+    collisionsBetweenMissiles();
+    collisionsBetweenMissilesAndEnemies();
+    collisionsBetweenMissilesAndPlayerAndFlag();
+}
+
+void Scene::playerCollidesWithBounds()
+{
     m_player->setMoveUpEnabled(!m_player->collidesWithItem(m_topRect));
     m_player->setMoveDownEnabled(!m_player->collidesWithItem(m_bottomRect));
     m_player->setMoveLeftEnabled(!m_player->collidesWithItem(m_leftRect));
     m_player->setMoveRightEnabled(!m_player->collidesWithItem(m_rightRect));
+}
 
-    // enemies are moved
+void Scene::playerCollidesWithBricks()
+{
+    for (Brick *brick : m_brickList)
+    {
+        if (m_player->collidesWithItem(brick))
+        {
+            switch (m_player->direction())
+            {
+                case MovableItem::NORTH:
+                {
+                    m_player->setMoveUpEnabled(false);
+                    break;
+                }
+                case MovableItem::SOUTH:
+                {
+                    m_player->setMoveDownEnabled(false);
+                    break;
+                }
+                case MovableItem::EAST:
+                {
+                    m_player->setMoveRightEnabled(false);
+                    break;
+                }
+                case MovableItem::WEST:
+                {
+                    m_player->setMoveLeftEnabled(false);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void Scene::playerCollidesWithEnemies()
+{
+    for (Enemy *enemy : m_enemyList)
+    {
+        if (m_player->collidesWithItem(enemy))
+        {
+            switch (m_player->direction())
+            {
+                case MovableItem::NORTH:
+                {
+                    m_player->setMoveUpEnabled(false);
+                    break;
+                }
+                case MovableItem::SOUTH:
+                {
+                    m_player->setMoveDownEnabled(false);
+                    break;
+                }
+                case MovableItem::EAST:
+                {
+                    m_player->setMoveRightEnabled(false);
+                    break;
+                }
+                case MovableItem::WEST:
+                {
+                    m_player->setMoveLeftEnabled(false);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void Scene::playerCollisions()
+{
+    playerCollidesWithBounds();
+    playerCollidesWithBricks();
+    playerCollidesWithEnemies();
+}
+
+void Scene::enemyCollisions()
+{
     for (Enemy *enemy : m_enemyList)
     {
         switch (enemy->direction())
@@ -243,35 +431,36 @@ void Scene::timeOut()
             case MovableItem::NORTH:
             {
                 enemy->moveUp();
-                enemy->changeDirectionIfNeeded(m_topRect, MovableItem::NORTH);
+                enemy->changeDirectionIfNeeded(m_topRect, enemy->direction());
                 break;
             }
             case MovableItem::SOUTH:
             {
                 enemy->moveDown();
-                enemy->changeDirectionIfNeeded(m_bottomRect, MovableItem::SOUTH);
+                enemy->changeDirectionIfNeeded(m_bottomRect, enemy->direction());
                 break;
             }
             case MovableItem::EAST:
             {
                 enemy->moveRight();
-                enemy->changeDirectionIfNeeded(m_rightRect, MovableItem::EAST);
+                enemy->changeDirectionIfNeeded(m_rightRect, enemy->direction());
                 break;
             }
             case MovableItem::WEST:
             {
                 enemy->moveLeft();
-                enemy->changeDirectionIfNeeded(m_leftRect, MovableItem::WEST);
+                enemy->changeDirectionIfNeeded(m_leftRect, enemy->direction());
                 break;
             }
         }
     }
+}
 
-    // missiles are moved
-    for (Missile *missile : m_missileList)
-    {
-        missile->move();
-    }
+void Scene::timeOut()
+{
+    missileCollisions();
+    playerCollisions();
+    enemyCollisions();
 }
 
 void Scene::keyPressEvent(QKeyEvent *event)
@@ -310,14 +499,6 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     dynamic_cast<MouseTracker*>(m_mouseTrackerProxy->widget())->display(event->scenePos());
     QGraphicsScene::mouseMoveEvent(event);
-}
-
-void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    const double x = event->scenePos().x();
-    const double y = event->scenePos().y();
-    addBrickSet(Brick::createBrickSet(x, y, 10, 5));
-    event->accept();
 }
 
 std::map<Missile*, Enemy*> Scene::getCollisionMapWithEnemies() const
