@@ -17,7 +17,17 @@ Enemy::Enemy(QGraphicsItem *parent)
     setLifes();
     setTankType();
     setShootSpeed();
+    createTimers();
+}
 
+Enemy::~Enemy()
+{
+    delete m_directionTimer;
+    delete m_shootTimer;
+}
+
+void Enemy::createTimers()
+{
     m_directionTimer = new DirectionTimer;
     m_directionTimer->setEnemy(this);
     m_directionTimer->start(5000);
@@ -25,12 +35,6 @@ Enemy::Enemy(QGraphicsItem *parent)
     m_shootTimer = new ShootTimer;
     m_shootTimer->setEnemy(this);
     m_shootTimer->start(3000);
-}
-
-Enemy::~Enemy()
-{
-    delete m_directionTimer;
-    delete m_shootTimer;
 }
 
 void Enemy::loadImageFromResource()

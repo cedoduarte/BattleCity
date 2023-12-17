@@ -34,6 +34,7 @@ private:
     ShootTimer *m_shootTimer;
     static double s_tankSpeed;
     static double s_tankMissileSpeed;
+    void createTimers();
 };
 
 class DirectionTimer : public QTimer

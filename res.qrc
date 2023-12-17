@@ -9,5 +9,9 @@
         <file>img/mute.png</file>
         <file>img/plus.png</file>
         <file>img/flag.png</file>
+        <file>wav/shoot.wav</file>
+        <file>wav/boom.wav</file>
+        <file>wav/boom2.wav</file>
+        <file>wav/background.wav</file>
     </qresource>
 </RCC>

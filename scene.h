@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 
+class QSoundEffect;
 class Brick;
 class Tank;
 class FlagItem;
@@ -75,6 +76,7 @@ private:
     void collisionsBetweenMissilesAndEnemies();
     void collisionsBetweenMissilesAndPlayerAndFlag();
     void addMissingEnemies();
+    void createSoundEffects();
 
     FlagItem *m_flagItem;
     QTimer *m_timer;
@@ -97,6 +99,10 @@ private:
     NameKey m_rightKey;
     NameKey m_shootKey;
     int m_enemyCount;
+    QSoundEffect *m_shootSound;
+    QSoundEffect *m_boomSound;
+    QSoundEffect *m_boomSound2;
+    QSoundEffect *m_backgroundSound;
 };
 
 #endif // SCENE_H

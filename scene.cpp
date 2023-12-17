@@ -16,6 +16,7 @@
 #include <QKeyEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsProxyWidget>
+#include <QSoundEffect>
 
 Scene* Scene::s_scene = nullptr;
 
@@ -27,6 +28,10 @@ Scene::Scene(const QRectF &sceneRect, QObject *parent)
 
 Scene::~Scene()
 {
+    delete m_shootSound;
+    delete m_boomSound;
+    delete m_boomSound2;
+    delete m_backgroundSound;
 }
 
 void Scene::init(const QRectF &sceneRect)
@@ -38,8 +43,30 @@ void Scene::init(const QRectF &sceneRect)
     createPlayer();
     createEnemies();
     createFlagItem();
-    createBrickBlocks();
+    createBrickBlocks();    
+    createSoundEffects();
     createTimer();
+}
+
+void Scene::createSoundEffects()
+{
+    m_shootSound = new QSoundEffect;
+    m_shootSound->setSource(QUrl("qrc:/wav/shoot.wav"));
+    m_shootSound->setVolume(0.25f);
+
+    m_boomSound = new QSoundEffect;
+    m_boomSound->setSource(QUrl("qrc:/wav/boom.wav"));
+    m_boomSound->setVolume(0.25f);
+
+    m_boomSound2 = new QSoundEffect;
+    m_boomSound2->setSource(QUrl("qrc:/wav/boom2.wav"));
+    m_boomSound2->setVolume(0.25f);
+
+    m_backgroundSound = new QSoundEffect;
+    m_backgroundSound->setSource(QUrl("qrc:/wav/background.wav"));
+    m_backgroundSound->setLoopCount(QSoundEffect::Infinite);
+    m_backgroundSound->setVolume(0.25f);
+    m_backgroundSound->play();
 }
 
 void Scene::createBrickBlocks()
@@ -295,7 +322,9 @@ void Scene::collisionsBetweenMissilesAndEnemies()
 
         removeItem(it->second);
         m_enemyList.remove(it->second);
-        delete it->second;        
+        delete it->second;
+
+        m_boomSound->play();
     }
 }
 
@@ -309,6 +338,7 @@ void Scene::collisionsBetweenMissilesAndPlayerAndFlag()
             removeItem(missile);
             m_missileList.remove(missile);
             delete missile;
+            m_boomSound2->play();
 
             m_player->reduceLife();
             dynamic_cast<PlayerHUD*>(m_playerHUDProxy->widget())->loadData();
@@ -325,6 +355,7 @@ void Scene::collisionsBetweenMissilesAndPlayerAndFlag()
     {
         if (missile->collidesWithItem(m_flagItem))
         {
+            m_boomSound2->play();
             gameOver = true;
             break;
         }
@@ -484,7 +515,6 @@ void Scene::timeOut()
         m_timer->stop();
         // you win!
     }
-    // todo... agregar efectos de sonido
 }
 
 void Scene::keyPressEvent(QKeyEvent *event)
@@ -515,6 +545,7 @@ void Scene::keyPressEvent(QKeyEvent *event)
     else if (m_shootKey.match(key))
     {
         m_player->shoot();
+        m_shootSound->play();
     }
     QGraphicsScene::keyPressEvent(event);
 }
