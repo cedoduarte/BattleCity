@@ -28,10 +28,22 @@ Scene::Scene(const QRectF &sceneRect, QObject *parent)
 
 Scene::~Scene()
 {
+    m_thread->terminate();
+    m_thread->deleteLater();
+
+    m_backgroundSound->stop();
+    delete m_backgroundSound;
+
     delete m_shootSound;
     delete m_boomSound;
     delete m_boomSound2;
-    delete m_backgroundSound;
+}
+
+void Scene::createThread()
+{
+    m_thread = new SceneThread;
+    m_thread->setScene(this);
+    connect(m_thread, &SceneThread::timeOut, m_thread, &SceneThread::onTimeOut, Qt::QueuedConnection);
 }
 
 void Scene::init(const QRectF &sceneRect)
@@ -45,7 +57,7 @@ void Scene::init(const QRectF &sceneRect)
     createFlagItem();
     createBrickBlocks();    
     createSoundEffects();
-    createTimer();
+    createThread();
 }
 
 void Scene::createSoundEffects()
@@ -153,12 +165,6 @@ void Scene::createFlagItem()
     addItem(m_flagItem);
 }
 
-void Scene::createTimer()
-{
-    m_timer = new QTimer(this);
-    connect(m_timer, &QTimer::timeout, this, &Scene::timeOut);
-}
-
 void Scene::addMissile(Missile *missile)
 {
     addItem(missile);
@@ -172,9 +178,10 @@ void Scene::loadHUDs()
     dynamic_cast<KeyHUD*>(m_keyHUDProxy->widget())->loadData();
 }
 
-void Scene::startTimer(int msecs)
+void Scene::startThread(int msecs)
 {
-    m_timer->start(msecs);
+    m_thread->setMilliseconds(msecs);
+    m_thread->start(QThread::NormalPriority);
 }
 
 std::list<Enemy*> Scene::getEnemySiblings(Enemy *enemy) const
@@ -356,7 +363,7 @@ void Scene::collisionsBetweenMissilesAndPlayerAndFlag()
     }
     if (gameOver)
     {
-        m_timer->stop();
+        m_thread->terminate();
     }
 }
 
@@ -506,7 +513,7 @@ void Scene::timeOut()
     addMissingEnemies();
     if (m_enemyCount == 0)
     {
-        m_timer->stop();
+        m_thread->terminate();
         // you win!
     }
 }
@@ -564,4 +571,13 @@ std::map<Missile*, Enemy*> Scene::getCollisionMapWithEnemies() const
         }
     }
     return collisionMap;
+}
+
+void SceneThread::run()
+{
+    while (true)
+    {
+        emit timeOut();
+        msleep(m_milliseconds);
+    }
 }

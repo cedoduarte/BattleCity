@@ -6,6 +6,7 @@
 #include <QGraphicsScene>
 #include <list>
 #include <map>
+#include <QThread>
 
 class QSoundEffect;
 class Brick;
@@ -16,6 +17,7 @@ class Player;
 class Missile;
 class QTimer;
 class QGraphicsProxyWidget;
+class SceneThread;
 
 class Scene : public QGraphicsScene
 {
@@ -38,12 +40,12 @@ public:
     void setRightKey(const NameKey &key) { m_rightKey = key; }
     void setShootKey(const NameKey &key) { m_shootKey = key; }
     void loadHUDs();
-    void startTimer(int msecs);
+    void startThread(int msecs);
     std::list<Enemy*> getEnemySiblings(Enemy *enemy) const;
     const std::list<Enemy*>& enemyList() const { return m_enemyList; }
     const std::list<Brick*>& brickList() const { return m_brickList; }
     int enemyCount() const { return m_enemyCount; }
-private slots:
+public slots:
     void timeOut();
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -64,7 +66,6 @@ private:
     QColor setupScene(const QRectF &sceneRect);
     void createPlayer();
     void createFlagItem();
-    void createTimer();
     void playerCollidesWithBounds();
     void playerCollidesWithBricks();
     void playerCollidesWithEnemies();
@@ -78,9 +79,9 @@ private:
     void addMissingEnemies();
     void createSoundEffects();
     void createEnemy(double x, double y);
+    void createThread();
 
     FlagItem *m_flagItem;
-    QTimer *m_timer;
     Player *m_player;
     std::list<Missile*> m_missileList;
     std::list<Enemy*> m_enemyList;
@@ -104,6 +105,26 @@ private:
     QSoundEffect *m_boomSound;
     QSoundEffect *m_boomSound2;
     QSoundEffect *m_backgroundSound;
+    SceneThread *m_thread;
+};
+
+class SceneThread : public QThread
+{
+    Q_OBJECT
+public:
+    explicit SceneThread(QObject *parent = nullptr) : QThread(parent) {}
+    virtual ~SceneThread() {}
+    void setScene(Scene *scene) { m_scene = scene; }
+    void setMilliseconds(int milliseconds) { m_milliseconds = milliseconds; }
+public slots:
+    void onTimeOut() { m_scene->timeOut(); }
+signals:
+    void timeOut();
+protected:
+    void run() override;
+private:
+    Scene *m_scene;
+    int m_milliseconds;
 };
 
 #endif // SCENE_H

@@ -1,5 +1,4 @@
 #include "enemy.h"
-#include "util.h"
 #include "scene.h"
 #include "player.h"
 #include "brick.h"
@@ -17,60 +16,37 @@ Enemy::Enemy(QGraphicsItem *parent)
     setLifes();
     setTankType();
     setShootSpeed();
-    createTimers();
+    createThreads();
 }
 
 Enemy::~Enemy()
 {
-    delete m_directionTimer;
-    delete m_shootTimer;
+    m_directionThread->terminate();
+    m_directionThread->deleteLater();
+
+    m_shootThread->terminate();
+    m_shootThread->deleteLater();
 }
 
-void Enemy::createTimers()
+void Enemy::createThreads()
 {
-    m_directionTimer = new DirectionTimer;
-    m_directionTimer->setEnemy(this);
-    m_directionTimer->start(5000);
+    m_directionThread = new DirectionThread;
+    m_directionThread->setEnemy(this);
+    DirectionThread::connect(m_directionThread,
+                             &DirectionThread::timeOut,
+                             m_directionThread,
+                             &DirectionThread::onTimeOut,
+                             Qt::QueuedConnection);
+    m_directionThread->start(QThread::NormalPriority);
 
-    m_shootTimer = new ShootTimer;
-    m_shootTimer->setEnemy(this);
-    m_shootTimer->start(3000);
-}
-
-void Enemy::loadImageFromResource()
-{
-    setPixmap(QPixmap(":/img/enemy.png"));
-}
-
-void Enemy::setSpeed()
-{
-    setSpeedX(s_tankSpeed);
-    setSpeedY(s_tankSpeed);
-}
-
-void Enemy::setLifes()
-{
-    setLifeCount(1);
-}
-
-void Enemy::setTankType()
-{
-    m_tankType = ENEMY_TANK;
-}
-
-void Enemy::setShootSpeed()
-{
-    setMissileSpeed(s_tankMissileSpeed);
-}
-
-void Enemy::changeDirection()
-{
-    setDirection(Util::randomItem({ NORTH, SOUTH, EAST, WEST }));
-}
-
-void Enemy::onShootTimeOut()
-{
-    shoot();
+    m_shootThread = new ShootThread;
+    m_shootThread->setEnemy(this);
+    ShootThread::connect(m_shootThread,
+                         &ShootThread::timeOut,
+                         m_shootThread,
+                         &ShootThread::onTimeOut,
+                         Qt::QueuedConnection);
+    m_shootThread->start(QThread::NormalPriority);
 }
 
 void Enemy::changeDirectionAvoiding(int direction)
@@ -112,5 +88,23 @@ void Enemy::changeDirectionIfNeeded(QGraphicsRectItem *boundaryRect, int directi
     if (collidingBrickSet.size() > 0)
     {
         changeDirectionAvoiding(direction);
+    }
+}
+
+void DirectionThread::run()
+{
+    while (true)
+    {
+        emit timeOut();
+        msleep(5000);
+    }
+}
+
+void ShootThread::run()
+{
+    while (true)
+    {
+        emit timeOut();
+        msleep(3000);
     }
 }
