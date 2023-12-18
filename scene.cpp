@@ -80,27 +80,21 @@ void Scene::createBrickBlocks()
     addBrickSet(Brick::createBrickSet(14.0, 350.0, 10, 75));
 }
 
+void Scene::createEnemy(double x, double y)
+{
+    Enemy *enemy = new Enemy;
+    enemy->setPos(x, y);
+    m_enemyList.push_back(enemy);
+    addItem(enemy);
+    m_enemyCount--;
+}
+
 void Scene::createEnemies()
 {
-    m_enemyCount = 20;
-
-    Enemy *enemy = new Enemy;
-    enemy->setPos(0.0, 0.0);
-    m_enemyList.push_back(enemy);
-    addItem(enemy);
-    m_enemyCount--;
-
-    enemy = new Enemy;
-    enemy->setPos(350.0, 0.0);
-    m_enemyList.push_back(enemy);
-    addItem(enemy);
-    m_enemyCount--;
-
-    enemy = new Enemy;
-    enemy->setPos(730.0, 0.0);
-    m_enemyList.push_back(enemy);
-    addItem(enemy);
-    m_enemyCount--;
+    m_enemyCount = 100;
+    createEnemy(0.0, 0.0);
+    createEnemy(350.0, 0.0);
+    createEnemy(730.0, 0.0);
 }
 
 void Scene::createKeys()

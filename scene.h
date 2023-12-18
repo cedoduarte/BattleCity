@@ -77,6 +77,7 @@ private:
     void collisionsBetweenMissilesAndPlayerAndFlag();
     void addMissingEnemies();
     void createSoundEffects();
+    void createEnemy(double x, double y);
 
     FlagItem *m_flagItem;
     QTimer *m_timer;
