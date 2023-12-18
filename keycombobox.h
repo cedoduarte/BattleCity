@@ -11,6 +11,8 @@ public:
     virtual ~KeyComboBox();
     void setCurrentKey(int code);
     void setCurrentKey(const QString &name) { setCurrentText(name); }
+private:
+    void populate();
 };
 
 #endif // KEYCOMBOBOX_H

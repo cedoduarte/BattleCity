@@ -4,15 +4,20 @@
 KeyComboBox::KeyComboBox(QWidget *parent)
     : QComboBox(parent)
 {
-    for (const NameKey &key : NameKey::keyMap())
-    {
-        addItem(key.name(), key.code());
-    }
+    populate();
     setEditable(true);
 }
 
 KeyComboBox::~KeyComboBox()
 {
+}
+
+void KeyComboBox::populate()
+{
+    for (const NameKey &key : NameKey::keyMap())
+    {
+        addItem(key.name(), key.code());
+    }
 }
 
 void KeyComboBox::setCurrentKey(int code)

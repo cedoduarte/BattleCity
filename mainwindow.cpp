@@ -9,6 +9,16 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    initScene();
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::initScene()
+{
     QRectF sceneRect;
     sceneRect.setX(0.0);
     sceneRect.setY(0.0);
@@ -20,9 +30,4 @@ MainWindow::MainWindow(QWidget *parent)
     m_scene->startThread(100);
     ui->graphicsView->setScene(m_scene);
     ui->graphicsView->setMouseTracking(true);
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
 }

@@ -27,6 +27,8 @@ protected:
     int m_lifeCount;
     TankType m_tankType;
     int m_missileSpeed;
+private:
+    void compute_dx_dy(double &dxMissile, double &dyMissile, const QSize &tankSize, const QSize &missileSize) const;
 };
 
 #endif // TANK_H
