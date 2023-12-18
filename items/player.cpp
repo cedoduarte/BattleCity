@@ -15,39 +15,3 @@ Player::Player(QGraphicsItem *parent)
 Player::~Player()
 {
 }
-
-void Player::addLife()
-{
-    m_lifeCount++;
-}
-
-void Player::reduceLife()
-{
-    m_lifeCount--;
-}
-
-void Player::loadImageFromResource()
-{
-    setPixmap(QPixmap(":/img/player.png"));
-}
-
-void Player::setSpeed()
-{
-    setSpeedX(10.0);
-    setSpeedY(10.0);
-}
-
-void Player::setLifes()
-{
-    setLifeCount(3);
-}
-
-void Player::setTankType()
-{
-    m_tankType = PLAYER_TANK;
-}
-
-void Player::setShootSpeed()
-{
-    setMissileSpeed(20.0);
-}

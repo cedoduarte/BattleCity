@@ -9,7 +9,7 @@ public:
     explicit FlagItem(QGraphicsItem *parent = nullptr);
     virtual ~FlagItem();
 protected:
-    void loadImageFromResource() override;
+    void loadImageFromResource() override { setPixmap(QPixmap(":/img/flag.png")); }
 };
 
 #endif // FLAGITEM_H

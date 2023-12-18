@@ -18,7 +18,7 @@ public:
     void setEnabled(bool enabled) { m_enabled = enabled; }
     void setDisabled(bool disabled) { m_enabled = !disabled; }
     bool isEnabled() { return m_enabled; }
-    bool match(int keyCode) const;
+    bool match(int keyCode) const { return m_enabled && m_code == keyCode; }
     static int code(const QString &name);
     static QString name(int code);
     static void initializeKeyMap();

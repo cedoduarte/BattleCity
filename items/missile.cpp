@@ -38,14 +38,3 @@ void Missile::move()
         }
     }
 }
-
-void Missile::loadImageFromResource()
-{
-    setPixmap(QPixmap(":/img/missile.png"));
-}
-
-void Missile::setSpeed()
-{
-    setSpeedX(20.0);
-    setSpeedY(20.0);
-}

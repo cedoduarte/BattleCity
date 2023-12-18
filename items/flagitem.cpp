@@ -9,8 +9,3 @@ FlagItem::FlagItem(QGraphicsItem *parent)
 FlagItem::~FlagItem()
 {
 }
-
-void FlagItem::loadImageFromResource()
-{
-    setPixmap(QPixmap(":/img/flag.png"));
-}

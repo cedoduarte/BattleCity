@@ -10,14 +10,17 @@ public:
     virtual ~Player();
     static Player* player() { return s_player; }
     static void setPlayer(Player *player) { s_player = player; }
-    void addLife();
-    void reduceLife();
+    void addLife() { m_lifeCount++; }
+    void reduceLife() { m_lifeCount--; }
 protected:
-    void loadImageFromResource() override;
-    void setSpeed() override;
-    void setLifes() override;
-    void setTankType() override;
-    void setShootSpeed() override;
+    void loadImageFromResource() override { setPixmap(QPixmap(":/img/player.png")); }
+    void setSpeed() override {
+        setSpeedX(10.0);
+        setSpeedY(10.0);
+    }
+    void setLifes() override { setLifeCount(3); }
+    void setTankType() override { m_tankType = PLAYER_TANK; }
+    void setShootSpeed() override { setMissileSpeed(20.0); }
 private:
     static Player *s_player;
 };

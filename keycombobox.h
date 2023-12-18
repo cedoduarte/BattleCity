@@ -10,7 +10,7 @@ public:
     explicit KeyComboBox(QWidget *parent = nullptr);
     virtual ~KeyComboBox();
     void setCurrentKey(int code);
-    void setCurrentKey(const QString &name);
+    void setCurrentKey(const QString &name) { setCurrentText(name); }
 };
 
 #endif // KEYCOMBOBOX_H

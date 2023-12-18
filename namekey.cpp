@@ -27,11 +27,6 @@ NameKey::~NameKey()
 {
 }
 
-bool NameKey::match(int keyCode) const
-{
-    return m_enabled && m_code == keyCode;
-}
-
 int NameKey::code(const QString &name)
 {
     for (const NameKey &nameKey : s_keyMap)

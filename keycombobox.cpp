@@ -28,8 +28,3 @@ void KeyComboBox::setCurrentKey(int code)
     }
     setCurrentIndex(index);
 }
-
-void KeyComboBox::setCurrentKey(const QString &name)
-{
-    setCurrentText(name);
-}
