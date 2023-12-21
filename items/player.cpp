@@ -15,3 +15,9 @@ Player::Player(QGraphicsItem *parent)
 Player::~Player()
 {
 }
+
+void Player::setSpeed()
+{
+    setSpeedX(10.0);
+    setSpeedY(10.0);
+}

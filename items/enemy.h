@@ -25,10 +25,7 @@ public:
     void updateShootSpeed() { setShootSpeed(); }
 protected:
     void loadImageFromResource() override { setPixmap(QPixmap(":/img/enemy.png")); }
-    void setSpeed() override {
-        setSpeedX(s_tankSpeed);
-        setSpeedY(s_tankSpeed);
-    }
+    void setSpeed() override;
     void setLifes() override { setLifeCount(1); }
     void setTankType() override { m_tankType = ENEMY_TANK; }
     void setShootSpeed() override { setMissileSpeed(s_tankMissileSpeed); }

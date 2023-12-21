@@ -38,3 +38,9 @@ void Missile::move()
         }
     }
 }
+
+void Missile::setSpeed()
+{
+    setSpeedX(20.0);
+    setSpeedY(20.0);
+}

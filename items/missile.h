@@ -14,10 +14,7 @@ public:
     bool shootedByPlayer() const { return m_shootedByPlayer; }
 protected:
     void loadImageFromResource() override { setPixmap(QPixmap(":/img/missile.png")); }
-    void setSpeed() override {
-        setSpeedX(20.0);
-        setSpeedY(20.0);
-    }
+    void setSpeed() override;
 private:
     bool m_shootedByPlayer;
 };

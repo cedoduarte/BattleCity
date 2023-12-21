@@ -14,10 +14,7 @@ public:
     void reduceLife() { m_lifeCount--; }
 protected:
     void loadImageFromResource() override { setPixmap(QPixmap(":/img/player.png")); }
-    void setSpeed() override {
-        setSpeedX(10.0);
-        setSpeedY(10.0);
-    }
+    void setSpeed() override;
     void setLifes() override { setLifeCount(3); }
     void setTankType() override { m_tankType = PLAYER_TANK; }
     void setShootSpeed() override { setMissileSpeed(20.0); }

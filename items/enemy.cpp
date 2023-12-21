@@ -91,6 +91,12 @@ void Enemy::changeDirectionIfNeeded(QGraphicsRectItem *boundaryRect, int directi
     }
 }
 
+void Enemy::setSpeed()
+{
+    setSpeedX(s_tankSpeed);
+    setSpeedY(s_tankSpeed);
+}
+
 void DirectionThread::run()
 {
     while (true)
@@ -108,3 +114,4 @@ void ShootThread::run()
         msleep(3000);
     }
 }
+
